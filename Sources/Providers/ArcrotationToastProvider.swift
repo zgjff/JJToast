@@ -38,7 +38,7 @@ extension ArcrotationToastProvider: ActivityIndicatorToastable {
 public struct ArcrotationToastOptions: ToastOptions {
     public init() {}
     /// 三个圆弧的颜色
-    public var colors = (UIColor.white, UIColor.green, UIColor.red)
+    public var colors = (UIColor.white, UIColor.systemGreen, UIColor.systemRed)
     
     /// 圆的半径
     public var radius: CGFloat = 20
@@ -47,7 +47,7 @@ public struct ArcrotationToastOptions: ToastOptions {
     public var angle = CGFloat.pi / 3.0
     
     /// 圆弧距离containerView边缘的距离
-    public var margin: CGFloat = 30
+    public var margin: CGFloat = 20
     
     /// 圆弧线条宽度
     public var layerLineWidth: CGFloat = 3

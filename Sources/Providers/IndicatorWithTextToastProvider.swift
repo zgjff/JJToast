@@ -41,10 +41,10 @@ public final class IndicatorWithTextToastProvider<Indicator: ActivityIndicatorTo
 extension IndicatorWithTextToastProvider {
     public func didCalculationView<T>(_ view: UIView, viewSize size: CGSize, sender: T) where T : Toastable {
         if sender === indicatorView {
-            indicatorToastProvider = SubToastProvider(view: view, size: view.bounds.size)
+            indicatorToastProvider = SubToastProvider(view: view, contentSize: view.bounds.size, toastSize: size)
         }
         if sender === textView {
-            textToastProvider = SubToastProvider(view: view, size: view.bounds.size)
+            textToastProvider = SubToastProvider(view: view, contentSize: view.bounds.size, toastSize: size)
         }
     }
     
@@ -54,35 +54,104 @@ extension IndicatorWithTextToastProvider {
             return
         }
         // 指示器
-        let indicatorProviderSize = indicatorProvider.size
+        let indicatorSize = indicatorProvider.contentSize
+        let indicatorFrame = indicatorProvider.view.frame
+        let indicatorViewSize = indicatorProvider.toastSize
+        
+        let indicatorMargin = UIEdgeInsets(top: indicatorFrame.minY, left: indicatorFrame.minX, bottom: indicatorViewSize.height - indicatorFrame.maxY, right: indicatorViewSize.width - indicatorFrame.maxX)
         // 文字
-        let textProviderSize = textProvider.size
-        
-        let indicatorMargin = options.indicatorMargin
-        let textMargin = options.textMargin
-        
+        let textSize = textProvider.contentSize
+        let textFrame = textProvider.view.frame
+        let textViewSize = textProvider.toastSize
+        let textMargin = UIEdgeInsets(top: textFrame.minY, left: textFrame.minX, bottom: textViewSize.height - textFrame.maxY, right: textViewSize.width - textFrame.maxX)
         let width: CGFloat
         let height: CGFloat
         
         switch options.alignment {
         case .top:
-            width = max(indicatorProviderSize.width + indicatorMargin.left + indicatorMargin.right, textProviderSize.width + textMargin.left + textMargin.right)
-            height = indicatorProviderSize.height + indicatorMargin.top + textProviderSize.height + textMargin.bottom + options.indicatorAndTextSpace
-            indicatorProvider.view.frame = CGRect(x: width * 0.5 - indicatorProviderSize.width * 0.5, y: indicatorMargin.top, width: indicatorProviderSize.width, height: indicatorProviderSize.height)
-            textProvider.view.frame = CGRect(x: width * 0.5 - textProviderSize.width * 0.5, y: height - textMargin.bottom - textProviderSize.height, width: textProviderSize.width, height: textProviderSize.height)
+            let w = max(indicatorViewSize.width, textViewSize.width)
+            let h = indicatorSize.height + textSize.height + options.indicatorAndTextSpace + indicatorMargin.top + textMargin.bottom
+            
+            width = max(w, options.minSize.width)
+            height = max(h, options.minSize.height)
+            
+            if (width > options.maxSize.width) || (height > options.maxSize.height) {
+                textView.resetContentSizeWithMaxSize(CGSize(width: options.maxSize.width, height: options.maxSize.height - options.indicatorAndTextSpace - indicatorSize.height - textMargin.bottom - indicatorMargin.top))
+                return
+            }
+            
+            let heightIsShortThanMinHeight = h < options.minSize.height
+            
+            if heightIsShortThanMinHeight {
+                textProvider.view.frame = CGRect(x: width * 0.5 - textSize.width * 0.5, y: height - textMargin.bottom - textSize.height, width: textSize.width, height: textSize.height)
+                indicatorProvider.view.frame = CGRect(x: width * 0.5 - indicatorSize.width * 0.5, y: textProvider.view.frame.minY - options.indicatorAndTextSpace - indicatorSize.height, width: indicatorSize.width, height: indicatorSize.height)
+            } else {
+                textProvider.view.frame = CGRect(x: width * 0.5 - textSize.width * 0.5, y: height - textMargin.bottom - textSize.height, width: textSize.width, height: textSize.height)
+                indicatorProvider.view.frame = CGRect(x: width * 0.5 - indicatorSize.width * 0.5, y: textProvider.view.frame.minY - options.indicatorAndTextSpace - indicatorSize.height, width: indicatorSize.width, height: indicatorSize.height)
+            }
         case .bottom:
-            width = max(indicatorProviderSize.width + indicatorMargin.left + indicatorMargin.right, textProviderSize.width + textMargin.left + textMargin.right)
-            height = indicatorProviderSize.height + indicatorMargin.top + textProviderSize.height + textMargin.bottom + options.indicatorAndTextSpace
-            textProvider.view.frame = CGRect(x: width * 0.5 - textProviderSize.width * 0.5, y: textMargin.top, width: textProviderSize.width, height: textProviderSize.height)
-            indicatorProvider.view.frame = CGRect(x: width * 0.5 - indicatorProviderSize.width * 0.5, y: height - indicatorMargin.bottom - indicatorProviderSize.height, width: indicatorProviderSize.width, height: indicatorProviderSize.height)
+            let w = max(indicatorViewSize.width, textViewSize.width)
+            let h = indicatorSize.height + textSize.height + options.indicatorAndTextSpace + indicatorMargin.top + textMargin.bottom
+            
+            width = max(w, options.minSize.width)
+            height = max(h, options.minSize.height)
+            
+            if (width > options.maxSize.width) || (height > options.maxSize.height) {
+                textView.resetContentSizeWithMaxSize(CGSize(width: options.maxSize.width, height: options.maxSize.height - options.indicatorAndTextSpace - indicatorSize.height - textMargin.top - indicatorMargin.bottom))
+                return
+            }
+            
+            let heightIsShortThanMinHeight = h < options.minSize.height
+            
+            if heightIsShortThanMinHeight {
+                textProvider.view.frame = CGRect(x: width * 0.5 - textSize.width * 0.5, y: textMargin.top, width: textSize.width, height: textSize.height)
+                indicatorProvider.view.frame = CGRect(x: width * 0.5 - indicatorSize.width * 0.5, y: textProvider.view.frame.maxY + options.indicatorAndTextSpace, width: indicatorSize.width, height: indicatorSize.height)
+            } else {
+                textProvider.view.frame = CGRect(x: width * 0.5 - textSize.width * 0.5, y: textMargin.top, width: textSize.width, height: textSize.height)
+                
+                indicatorProvider.view.frame = CGRect(x: width * 0.5 - indicatorSize.width * 0.5, y: textProvider.view.frame.maxY + options.indicatorAndTextSpace, width: indicatorSize.width, height: indicatorSize.height)
+            }
         case .left:
-            // TODO
-            width = 0
-            height = 0
+            let w = indicatorSize.width + textSize.width + options.indicatorAndTextSpace + indicatorMargin.left + textMargin.right
+            let h = max(indicatorViewSize.height, textViewSize.height)
+            
+            width = max(w, options.minSize.width)
+            height = max(h, options.minSize.height)
+            if (width > options.maxSize.width) || (height > options.maxSize.height) {
+                textView.resetContentSizeWithMaxSize(CGSize(width: options.maxSize.width - options.indicatorAndTextSpace - indicatorMargin.left - indicatorSize.width - textMargin.right, height: options.maxSize.height))
+                return
+            }
+            
+            let widthIsShortThanMinWidth = w < options.minSize.width
+            
+            if widthIsShortThanMinWidth {
+                indicatorProvider.view.frame = CGRect(x: width * 0.5 - indicatorSize.width, y: height * 0.5 - indicatorSize.height * 0.5, width: indicatorSize.width, height: indicatorSize.height)
+                textProvider.view.frame = CGRect(x: indicatorProvider.view.frame.maxX + options.indicatorAndTextSpace, y: height * 0.5 - textSize.height * 0.5, width: textSize.width, height: textSize.height)
+            } else {
+                indicatorProvider.view.frame = CGRect(x: indicatorMargin.left, y: height * 0.5 - indicatorSize.height * 0.5, width: indicatorSize.width, height: indicatorSize.height)
+                textProvider.view.frame = CGRect(x: indicatorProvider.view.frame.maxX + options.indicatorAndTextSpace, y: height * 0.5 - textSize.height * 0.5, width: textSize.width, height: textSize.height)
+            }
         case .right:
-            // TODO
-            width = 0
-            height = 0
+            let w = indicatorSize.width + textSize.width + options.indicatorAndTextSpace + indicatorMargin.left + textMargin.right
+            let h = max(indicatorViewSize.height, textViewSize.height)
+            
+            width = max(w, options.minSize.width)
+            height = max(h, options.minSize.height)
+            
+            if (width > options.maxSize.width) || (height > options.maxSize.height) {
+                textView.resetContentSizeWithMaxSize(CGSize(width: options.maxSize.width - options.indicatorAndTextSpace - indicatorMargin.right - indicatorSize.width - textMargin.left, height: options.maxSize.height))
+                return
+            }
+            
+            let widthIsShortThanMinWidth = w < options.minSize.width
+            
+            if widthIsShortThanMinWidth {
+                indicatorProvider.view.frame = CGRect(x: width * 0.5, y: height * 0.5 - indicatorSize.height * 0.5, width: indicatorSize.width, height: indicatorSize.height)
+                textProvider.view.frame = CGRect(x: indicatorProvider.view.frame.minX - options.indicatorAndTextSpace - textSize.width, y: height * 0.5 - textSize.height * 0.5, width: textSize.width, height: textSize.height)
+            } else {
+                indicatorProvider.view.frame = CGRect(x: width - indicatorMargin.right - indicatorSize.width, y: height * 0.5 - indicatorSize.height * 0.5, width: indicatorSize.width, height: indicatorSize.height)
+                textProvider.view.frame = CGRect(x: indicatorProvider.view.frame.minX - options.indicatorAndTextSpace - textSize.width, y: height * 0.5 - textSize.height * 0.5, width: textSize.width, height: textSize.height)
+            }
         }
         let view = UIView()
         view.addSubview(indicatorProvider.view)
@@ -115,17 +184,14 @@ public struct IndicatorWithTextToastProviderOptions<Indicator: ActivityIndicator
     /// 指示器对齐方式
     public var alignment = IndicatorWithTextToastProvider<Indicator, Text>.IndicatorAlignment.top
     
-    /// 文字外边距
-    public var textMargin = UIEdgeInsets(top: 15, left: 15, bottom: 15, right: 15)
-    
-    /// 指示器外边距
-    public var indicatorMargin = UIEdgeInsets(top: 15, left: 15, bottom: 15, right: 15)
-    
     /// 文字与指示器的间距
     public var indicatorAndTextSpace: CGFloat = 15
     
     /// 设置最大size
     public var maxSize = CGSize(width: UIScreen.main.bounds.width - 100, height: 500)
+    
+    /// 设置最小size
+    public var minSize = CGSize(width: 125, height: 125)
 }
 
 extension IndicatorWithTextToastProvider {
@@ -136,6 +202,7 @@ extension IndicatorWithTextToastProvider {
     
     private struct SubToastProvider {
         let view: UIView
-        let size: CGSize
+        let contentSize: CGSize
+        let toastSize: CGSize
     }
 }

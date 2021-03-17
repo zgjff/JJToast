@@ -26,6 +26,7 @@ public protocol ToastableDelegate: NSObjectProtocol {
 public protocol TextToastable: Toastable {
     init(text: String)
     init(attributedString: NSAttributedString)
+    func resetContentSizeWithMaxSize(_ size: CGSize)
 }
 
 /// 显示活动指示器的 `toast`协议
@@ -33,13 +34,8 @@ public protocol ActivityIndicatorToastable: Toastable {
     func startAnimating()
 }
 
-//// TODO: - 菊花+字 / 圆弧+字 / 对号 + 字 / ❌ + 子
-//public protocol TextWithActivityIndicatorable: AttributedTextToastable, ActivityIndicatorable {}
-
 /// 显示指示器+富文本的 `toast`协议
 public protocol IndicatorWithTextToastable: Toastable {
-//    init<Indicator, Text>(Indicator: Indicator, text: Text) where Indicator: ActivityIndicatorToastable, Text: AttributedTextToastable
-//    init(Indicator: ActivityIndicatorToastable, text: AttributedTextToastable)
     func startAnimating()
 }
 

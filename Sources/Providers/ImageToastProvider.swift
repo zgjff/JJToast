@@ -27,10 +27,10 @@ public final class ImageToastProvider {
 extension ImageToastProvider: ActivityIndicatorToastable {
     public func layoutToastView(with options: ImageToastOptions) {
         config(with: options)
-        let size = calculationSize(with: options)
-        imageView.frame = CGRect(x: 0, y: 0, width: options.imageSize.width, height: options.imageSize.height)
-        imageView.center = CGPoint(x: size.width * 0.5, y: size.height * 0.5)
-        delegate?.didCalculationView(imageView, viewSize: size, sender: self)
+        let (imageSize, toastSize) = calculationSize(with: options)
+        imageView.frame = CGRect(x: 0, y: 0, width: imageSize.width, height: imageSize.height)
+        imageView.center = CGPoint(x: toastSize.width * 0.5, y: toastSize.height * 0.5)
+        delegate?.didCalculationView(imageView, viewSize: toastSize, sender: self)
         startAnimating()
     }
     
@@ -51,11 +51,18 @@ private extension ImageToastProvider {
         imageView.animationRepeatCount = options.animationRepeatCount
     }
     
-    func calculationSize(with options: ImageToastOptions) -> CGSize {
-        let size = options.imageSize
-        let width = size.width + options.padding.left + options.padding.right
-        let height = size.height + options.padding.top + options.padding.bottom
-        return CGSize(width: width, height: height)
+    func calculationSize(with options: ImageToastOptions) -> (image: CGSize, toast: CGSize) {
+        let imageSize: CGSize
+        switch options.imageSize {
+        case .auto:
+            imageView.sizeToFit()
+            imageSize = imageView.bounds.size
+        case .size(let s):
+            imageSize = s
+        }
+        let width = imageSize.width + options.padding.left + options.padding.right
+        let height = imageSize.height + options.padding.top + options.padding.bottom
+        return (imageSize, CGSize(width: width, height: height))
     }
 }
 
@@ -68,10 +75,10 @@ public struct ImageToastOptions: ToastOptions {
     public var contentMode = UIImageView.ContentMode.scaleAspectFit
     
     /// 设置图像内边距
-    public var padding = UIEdgeInsets(top: 15, left: 15, bottom: 15, right: 15)
+    public var padding = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
     
-    /// 设置图像大小
-    public var imageSize = CGSize(width: 80, height: 80)
+    /// 设置图像大小---默认自适应图片大小
+    public var imageSize = ImageSize.auto
     
     fileprivate var hasChangeAnimationDuration = false
     
@@ -84,4 +91,14 @@ public struct ImageToastOptions: ToastOptions {
     
     /// 设置动画重复次数
     public var animationRepeatCount = 0
+}
+
+extension ImageToastOptions {
+    /// 图片大小
+    public enum ImageSize {
+        /// 自适应
+        case auto
+        /// 规定确定的size
+        case size(CGSize)
+    }
 }

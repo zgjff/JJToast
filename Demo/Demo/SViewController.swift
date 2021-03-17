@@ -20,25 +20,19 @@ extension SViewController {
         super.viewDidLoad()
         view.backgroundColor = .cyan
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(onClickBarItem(_:)))
-        
     }
     
     @IBAction private func onClickBarItem(_ sender: UIBarButtonItem) {
-        let toast = IndicatorWithTextToastProvider(indicator: ArcrotationToastProvider(), text: TextToastProvider(text: "abcdefasdfksjdafhaksljdhf首发独家反馈哈圣诞节快乐返回萨里的科技护肤撒到了会计法黄金时代克拉合法圣诞节快乐返回撒的快乐返回"))
+        let str = "稻盛和夫阿斯顿发生大返回数据卡的繁花似锦的卡号发生的咖喱和方式打开就会撒放到空间里阿水淀粉撒地方撒的"
+//        let str = "是"
+        let toast = IndicatorWithTextToastProvider(indicator: ArcrotationToastProvider(), text: TextToastProvider(text: str))
         view.makeToast(toast).updateToast { opt in
-//                opt.imageSize = CGSize(width: 20, height: 20)
-            opt.alignment = .bottom
+            opt.alignment = .right
         }
         .duration(.distantFuture)
         .didClick { [unowned self] c in
             self.view.hideToast(c)
-        }.didDisappear {
-            print("12312321312")
         }.showStart(.inQueue)
         .show()
-    }
-    
-    func aaaa<T: UIViewController>(vc: T) {
-        
     }
 }
