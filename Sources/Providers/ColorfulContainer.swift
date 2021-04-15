@@ -3,7 +3,7 @@
 //  Demo
 //
 //  Created by 郑桂杰 on 2020/7/31.
-//  Copyright © 2020 Qile. All rights reserved.
+//  Copyright © 2020 zgj. All rights reserved.
 //
 
 import UIKit
@@ -12,7 +12,7 @@ import UIKit
 public final class ColorfulContainer: NSObject {
     public var options = ToastContainerOptions()
     private let backgroundView = UIView()
-    private var hiddenCompletion: (() -> ())?
+    private var hiddenCompletion: ((ColorfulContainer) -> ())?
     
     init(color: UIColor) {
         super.init()
@@ -50,19 +50,18 @@ extension ColorfulContainer: ToastContainer {
             backgroundView.layer.add(ani, forKey: key)
         }
     }
-    
-    public func startHide(completion: (() -> ())?) {
+    public func startHide(completion: ((ColorfulContainer) -> ())?) {
         // 如果显示时间太短,还处在显示动画中,直接干掉显示动画
         backgroundView.layer.removeAllAnimations()
         if let ani = options.startHiddenAnimations(for: backgroundView) {
             hiddenCompletion = completion
-            ani.delegate = self
+            ani.delegate = WeakProxy(target: self).target
             let key = options.layerAnimationKey(forShow: false)
             backgroundView.layer.add(ani, forKey: key)
         } else {
             backgroundView.removeFromSuperview()
             options.onDisappear?()
-            completion?()
+            completion?(self)
         }
     }
 }
@@ -73,7 +72,7 @@ extension ColorfulContainer: CAAnimationDelegate {
         backgroundView.layer.removeAllAnimations()
         backgroundView.removeFromSuperview()
         options.onDisappear?()
-        hiddenCompletion?()
+        hiddenCompletion?(self)
         hiddenCompletion = nil
     }
 }

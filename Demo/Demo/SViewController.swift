@@ -3,7 +3,7 @@
 //  Demo
 //
 //  Created by 郑桂杰 on 2020/7/16.
-//  Copyright © 2020 Qile. All rights reserved.
+//  Copyright © 2020 zgj. All rights reserved.
 //
 
 import UIKit
@@ -20,6 +20,26 @@ extension SViewController {
         super.viewDidLoad()
         view.backgroundColor = .cyan
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(onClickBarItem(_:)))
+//        let arr: NSMapTable<NSString, AAA> = .weakToStrongObjects()
+//        arr.setObject(AAA(index: 0), forKey: "0")
+//        arr.setObject(AAA(index: 1), forKey: "1")
+//        arr.setObject(AAA(index: 2), forKey: "2")
+//        print(arr, arr.count)
+//        let keys = arr.keyEnumerator()
+//        var key = keys.nextObject()
+//        while key != nil {
+//            print("----", key.unsafelyUnwrapped)
+//            key = keys.nextObject()
+//        }
+//        arr.removeObject(forKey: "1")
+//
+//        let keys1 = arr.keyEnumerator()
+//        var key1 = keys1.nextObject()
+//        while key1 != nil {
+//            print("+++++", key1.unsafelyUnwrapped)
+//            key1 = keys1.nextObject()
+//        }
+//        print(arr, arr.count)
     }
     
     @IBAction private func onClickBarItem(_ sender: UIBarButtonItem) {
@@ -29,10 +49,12 @@ extension SViewController {
         view.makeToast(toast).updateToast { opt in
             opt.alignment = .right
         }
-        .duration(.distantFuture)
-        .didClick { [unowned self] c in
+        .duration(.duration(10))
+        .didClick { c in
+            print("didClick+++++++++++++++")
             self.view.hideToast(c)
-        }.showStart(.inQueue)
+        }
+//        .showStart(.inQueue)
         .show()
     }
 }

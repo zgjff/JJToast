@@ -13,6 +13,8 @@
 		FD543E4024B45B0D00A75724 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FD543E3E24B45B0D00A75724 /* LaunchScreen.storyboard */; };
 		FD543E4B24B45F1F00A75724 /* Toastable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD543E4A24B45F1F00A75724 /* Toastable.swift */; };
 		FD543E5124B4619A00A75724 /* UIView+Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD543E5024B4619A00A75724 /* UIView+Toast.swift */; };
+		FD54D67626193B7800212E9A /* ToastBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD54D67526193B7800212E9A /* ToastBuilder.swift */; };
+		FD54D67A2619622100212E9A /* WeakProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD54D6792619622100212E9A /* WeakProxy.swift */; };
 		FD5D066424C006AB00E3537D /* SViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5D066324C006AB00E3537D /* SViewController.swift */; };
 		FD5D066624C02FAB00E3537D /* ContaienrQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5D066524C02FAB00E3537D /* ContaienrQueue.swift */; };
 		FD5D066824C0388700E3537D /* ActivityToastProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5D066724C0388700E3537D /* ActivityToastProvider.swift */; };
@@ -40,6 +42,8 @@
 		FD543E4124B45B0D00A75724 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FD543E4A24B45F1F00A75724 /* Toastable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toastable.swift; sourceTree = "<group>"; };
 		FD543E5024B4619A00A75724 /* UIView+Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Toast.swift"; sourceTree = "<group>"; };
+		FD54D67526193B7800212E9A /* ToastBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastBuilder.swift; sourceTree = "<group>"; };
+		FD54D6792619622100212E9A /* WeakProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakProxy.swift; sourceTree = "<group>"; };
 		FD5D066324C006AB00E3537D /* SViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SViewController.swift; sourceTree = "<group>"; };
 		FD5D066524C02FAB00E3537D /* ContaienrQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContaienrQueue.swift; sourceTree = "<group>"; };
 		FD5D066724C0388700E3537D /* ActivityToastProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityToastProvider.swift; sourceTree = "<group>"; };
@@ -105,6 +109,7 @@
 				FD543E5024B4619A00A75724 /* UIView+Toast.swift */,
 				FDDB7F7924B5B2EC00886AC4 /* Extensions.swift */,
 				FD8FCEB024C1462A0030B748 /* ToastDSL.swift */,
+				FD54D67526193B7800212E9A /* ToastBuilder.swift */,
 				FD99498924B4796900A328D6 /* ToastTime.swift */,
 				FDDB7F7524B591D900886AC4 /* ToastPosition.swift */,
 				FD99498324B463E700A328D6 /* ToastContainer.swift */,
@@ -112,6 +117,7 @@
 				FD8EB6FC24B6E66000FD3243 /* ToastContainerOptions.swift */,
 				FDDB7F7B24B5BCA900886AC4 /* ContainerAnimator.swift */,
 				FD543E4A24B45F1F00A75724 /* Toastable.swift */,
+				FD54D6792619622100212E9A /* WeakProxy.swift */,
 				FD543E4D24B4617000A75724 /* Providers */,
 			);
 			name = Sources;
@@ -206,6 +212,7 @@
 				FD5D066824C0388700E3537D /* ActivityToastProvider.swift in Sources */,
 				FDDB7F7C24B5BCA900886AC4 /* ContainerAnimator.swift in Sources */,
 				FD5D066424C006AB00E3537D /* SViewController.swift in Sources */,
+				FD54D67626193B7800212E9A /* ToastBuilder.swift in Sources */,
 				FD543E5124B4619A00A75724 /* UIView+Toast.swift in Sources */,
 				FD8EB6FD24B6E66000FD3243 /* ToastContainerOptions.swift in Sources */,
 				FD543E3824B45B0C00A75724 /* ViewController.swift in Sources */,
@@ -219,6 +226,7 @@
 				FD8FCEB124C1462A0030B748 /* ToastDSL.swift in Sources */,
 				FD543E4B24B45F1F00A75724 /* Toastable.swift in Sources */,
 				FD543E3424B45B0C00A75724 /* AppDelegate.swift in Sources */,
+				FD54D67A2619622100212E9A /* WeakProxy.swift in Sources */,
 				FDA2108925F62BE200401918 /* IndicatorWithTextToastProvider.swift in Sources */,
 				FD99498A24B4796900A328D6 /* ToastTime.swift in Sources */,
 				FDDB7F7824B5A93500886AC4 /* BlurEffectContainer.swift in Sources */,

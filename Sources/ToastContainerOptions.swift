@@ -3,10 +3,20 @@
 //  JJToast
 //
 //  Created by 郑桂杰 on 2020/7/9.
-//  Copyright © 2020 Qile. All rights reserved.
+//  Copyright © 2020 zgj. All rights reserved.
 //
 
 import UIKit
+
+public struct ContainerCornerRadius {
+    internal let cornerRadius: CGFloat
+    internal let corners: UIRectCorner
+    
+    init(cornerRadius: CGFloat, corners: UIRectCorner = .allCorners) {
+        self.cornerRadius = cornerRadius
+        self.corners = corners
+    }
+}
 
 public struct ToastContainerOptions {
     internal var cornerRadius: CGFloat = 6
@@ -63,13 +73,5 @@ extension ToastContainerOptions {
        
     internal func layerAnimationKey(forShow isShow: Bool) -> String {
         return isShow ? "showGroupAnimations" : "hideGroupAnimations"
-    }
-}
-
-extension ToastContainerOptions {
-    public enum CornerRadius {
-        case none
-        case value(CGFloat)
-        // TODO: 再加一个跟高一样的
     }
 }

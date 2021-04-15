@@ -3,7 +3,7 @@
 //  JJToast
 //
 //  Created by 郑桂杰 on 2020/7/7.
-//  Copyright © 2020 Qile. All rights reserved.
+//  Copyright © 2020 zgj. All rights reserved.
 //
 
 import UIKit
@@ -15,9 +15,9 @@ public extension UIView {
     }
     
     func hideToast(_ toast: ToastContainer) {
-        toast.startHide { [weak self] in
-            self?.shownContaienrQueue.remove(where: { container -> Bool in
-                return container === toast
+        toast.startHide { [weak self] container in
+            self?.shownContaienrQueue.remove(where: { c -> Bool in
+                return container === c
             })
             self?.showNextInQueueToast()
         }
@@ -40,20 +40,24 @@ extension UIView {
     internal func showToastContainer(_ container: ToastContainer) {
         shownContaienrQueue.append(container)
         container.showToast(inView: self)
+        print("showToastContainer0--------->", shownContaienrQueue.arr.count, shownContaienrQueue.arr)
         if case let .duration(t) = container.options.duration {
             hideToast(container, after: t)
         }
     }
     
     internal func hideToast(_ toast: ToastContainer, after time: TimeInterval) {
+        print("showToastContainer1--------->", shownContaienrQueue.arr.count, shownContaienrQueue.arr)
         if time <= 0.15 {
             self.hideToast(toast)
             return
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + time) { [weak self] in
-            guard let self = self else { return }
-            if self.shownContaienrQueue.contains(toast) {
-                self.hideToast(toast)
+            print("DispatchQueue.main.asyncAfter------", self, self?.shownContaienrQueue.arr)
+            guard let strongSelf = self else { return }
+            if strongSelf.shownContaienrQueue.contains(toast) {
+                print("========包含")
+                strongSelf.hideToast(toast)
             }
         }
     }

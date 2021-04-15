@@ -3,7 +3,7 @@
 //  JJToast
 //
 //  Created by 郑桂杰 on 2020/7/8.
-//  Copyright © 2020 Qile. All rights reserved.
+//  Copyright © 2020 zgj. All rights reserved.
 //
 
 import UIKit
@@ -12,7 +12,7 @@ import UIKit
 public final class BlurEffectContainer: NSObject {
     public var options = ToastContainerOptions()
     private let effectView = UIVisualEffectView()
-    private var hiddenCompletion: (() -> ())?
+    private var hiddenCompletion: ((BlurEffectContainer) -> ())?
     public init(effect: UIBlurEffect = UIBlurEffect(style: .dark)) {
         effectView.effect = effect
         effectView.isExclusiveTouch = true
@@ -20,7 +20,7 @@ public final class BlurEffectContainer: NSObject {
         let tap = UITapGestureRecognizer(target: self, action: #selector(onTap))
         effectView.addGestureRecognizer(tap)
     }
-    
+
     deinit {
         debugPrint("BlurEffectContainer deinit")
     }
@@ -32,11 +32,11 @@ extension BlurEffectContainer: ToastContainer {
         effectView.bounds.size = size
         effectView.contentView.addSubview(view)
     }
-    
+
     public func toastContainerSize() -> CGSize {
         return effectView.bounds.size
     }
-    
+
     public func showToast(inView view: UIView) {
         let center = options.postition.centerForContainer(self, inView: view)
         effectView.center = center
@@ -50,18 +50,18 @@ extension BlurEffectContainer: ToastContainer {
         }
     }
     
-    public func startHide(completion: (() -> ())?) {
+    public func startHide(completion: ((BlurEffectContainer) -> ())?) {
         // 如果显示时间太短,还处在显示动画中,直接干掉显示动画
         effectView.layer.removeAllAnimations()
         if let ani = options.startHiddenAnimations(for: effectView) {
             hiddenCompletion = completion
-            ani.delegate = self
+            ani.delegate = WeakProxy(target: self).target
             let key = options.layerAnimationKey(forShow: false)
             effectView.layer.add(ani, forKey: key)
         } else {
             effectView.removeFromSuperview()
             options.onDisappear?()
-            completion?()
+            completion?(self)
         }
     }
 }
@@ -72,7 +72,7 @@ extension BlurEffectContainer: CAAnimationDelegate {
         effectView.layer.removeAllAnimations()
         effectView.removeFromSuperview()
         options.onDisappear?()
-        hiddenCompletion?()
+        hiddenCompletion?(self)
         hiddenCompletion = nil
     }
 }

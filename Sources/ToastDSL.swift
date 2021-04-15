@@ -3,7 +3,7 @@
 //  JJToast
 //
 //  Created by 郑桂杰 on 2020/7/17.
-//  Copyright © 2020 Qile. All rights reserved.
+//  Copyright © 2020 zgj. All rights reserved.
 //
 
 import UIKit
@@ -90,22 +90,28 @@ public extension ToastDSL {
         containerOptions.onClick = block
         return self
     }
+    
+    // TODO: -- indicator 作为一个控制器只有一个
+    func asSingle() {
+        
+    }
 }
 
 public extension ToastDSL {
     func show() {
-        if container == nil {
-            container = BlurEffectContainer()
-        }
-        toast.delegate = container
-        container.options = containerOptions
+        let temp: ToastContainer = container == nil ? BlurEffectContainer() : container!
+//        if container == nil {
+//            container = BlurEffectContainer()
+//        }
+//        toast.delegate = container
+//        container.options = containerOptions
+        toast.delegate = temp
+        temp.options = containerOptions
         toast.layoutToastView(with: toastOptions)
-        
         if case .inQueue = containerOptions.startStyle, !view.shownContaienrQueue.isEmpty {
             view.inQueueContaienrQueue.append(container)
             return
         }
-        
-        view.showToastContainer(container)
+        view.showToastContainer(temp)
     }
 }
